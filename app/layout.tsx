@@ -1,3 +1,4 @@
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
 
 const RootLayout = ({
@@ -8,7 +9,7 @@ const RootLayout = ({
   return (
     <html lang="en">
       <body>
-        {children}
+        <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>
   );
