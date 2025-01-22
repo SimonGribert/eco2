@@ -1,4 +1,4 @@
-import { auth, signIn } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { Button } from "antd";
 
 const Home = async () => {
@@ -8,15 +8,15 @@ const Home = async () => {
 
   return (
     <div>
-      <Button type="primary">Button</Button>
+      <p>hello {session?.user?.name}</p>
 
       <form
         action={async () => {
           "use server";
-          await signIn("google");
+          await signOut({ redirectTo: "/login" });
         }}
       >
-        <button type="submit">Signin with Google</button>
+        <Button htmlType="submit">Signout</Button>
       </form>
     </div>
   );

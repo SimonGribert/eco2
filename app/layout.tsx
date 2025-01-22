@@ -1,5 +1,6 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
+import '@ant-design/v5-patch-for-react-19';
 
 const RootLayout = ({
   children,
