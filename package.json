@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.2",
+    "@auth/prisma-adapter": "^2.7.4",
     "@neondatabase/serverless": "^0.10.4",
     "@prisma/adapter-neon": "^6.2.1",
     "@prisma/client": "^6.2.1",
