@@ -1,19 +1,9 @@
-import { signIn } from "@/auth";
-import { Button } from "antd";
+import LoginForm from "./LoginForm";
 
 const Login = () => {
   return (
     <div>
-      <form
-        action={async () => {
-          "use server";
-          await signIn("google", {
-            redirectTo: "/",
-          });
-        }}
-      >
-        <Button htmlType="submit">Signin with Google</Button>
-      </form>
+      <LoginForm />
     </div>
   );
 };
