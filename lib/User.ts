@@ -1,4 +1,4 @@
-import { prisma } from "../prisma";
+import { prisma } from "@/prisma/prisma";
 
 export const Login = async (email: string, name: string, image: string) => {
   let user = await FindUser(email);

@@ -1,23 +1,14 @@
-import { auth, signOut } from "@/auth";
-import { Button } from "antd";
+import Link from "antd/es/typography/Link";
 
-const Home = async () => {
-  const session = await auth();
-
-  console.log(session);
-
+const Home = () => {
   return (
     <div>
-      <p>hello {session?.user?.name}</p>
-
-      <form
-        action={async () => {
-          "use server";
-          await signOut({ redirectTo: "/login" });
-        }}
+      <Link
+        href={`https://link.tink.com/1.0/transactions/connect-accounts/?client_id=${process.env.TINK_CLIENT_ID}&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Ftink-callback&market=SE&locale=en_US`}
+        target="_self"
       >
-        <Button htmlType="submit">Signout</Button>
-      </form>
+        Request Tink Access
+      </Link>
     </div>
   );
 };

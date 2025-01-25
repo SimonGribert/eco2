@@ -11,6 +11,7 @@
     "dev:migrate": "prisma migrate dev --name init"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.6.0",
     "@ant-design/nextjs-registry": "^1.0.2",
     "@auth/prisma-adapter": "^2.7.4",
     "@neondatabase/serverless": "^0.10.4",
