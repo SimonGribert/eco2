@@ -5,6 +5,7 @@ import Title from "antd/es/typography/Title";
 import Image from "next/image";
 import TinkTokenTime from "./TinkTokenTime";
 import { Suspense } from "react";
+import { UserOutlined } from "@ant-design/icons";
 
 const EcoHeader = async () => {
   const session = await auth();
@@ -33,17 +34,24 @@ const EcoHeader = async () => {
           <Title style={{ margin: 0 }} level={5}>
             {session?.user?.name ?? "First Last"}
           </Title>
-          <Avatar
-            src={
-              <Image
-                width={30}
-                height={30}
-                src={session?.user?.image ?? ""}
-                alt="avatar"
-              />
-            }
-            shape="circle"
-          />
+          {session?.user?.image ? (
+            <Avatar
+              src={
+                <Image
+                  width={30}
+                  height={30}
+                  src={session.user.image}
+                  alt="avatar"
+                />
+              }
+              shape="circle"
+            />
+          ) : (
+            <Avatar
+              icon={<UserOutlined width={30} height={30} />}
+              shape="circle"
+            />
+          )}
         </div>
       </div>
     </Header>

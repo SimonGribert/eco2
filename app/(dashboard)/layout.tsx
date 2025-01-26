@@ -6,9 +6,10 @@ import {
   AccountBookOutlined,
   HomeOutlined,
   LogoutOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Button, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import MenuItem from "antd/es/menu/MenuItem";
 import Image from "next/image";
@@ -33,8 +34,8 @@ const DashboardLayout = ({
       icon: (
         <Image
           src="/tinkicon.svg"
-          width={16}
-          height={16}
+          width={14}
+          height={14}
           alt="Picture of the author"
         />
       ),
@@ -44,38 +45,29 @@ const DashboardLayout = ({
           label: <Link href="/tink-bank-accounts">Accounts</Link>,
           icon: <AccountBookOutlined />,
         },
+        {
+          key: "tink-transactions",
+          label: <Link href="/tink-transactions">Transactions</Link>,
+          icon: <TransactionOutlined />,
+        },
       ],
     },
     {
       key: "signout",
+      className: "eco-hover-red",
       label: (
-        <form
-          action={async () => {
+        <Link
+          style={{ color: "#ff4d4f" }}
+          onClick={async () => {
             "use server";
             await signOut({ redirectTo: "/login" });
           }}
+          href=""
         >
-          <Button
-            style={{
-              width: "100%",
-              padding: 0,
-              display: "inline-block",
-              textAlign: "start",
-            }}
-            danger
-            icon={<LogoutOutlined />}
-            type="text"
-            htmlType="submit"
-          >
-            <span
-              style={{ marginLeft: "10px" }}
-              className="ant-menu-title-content"
-            >
-              Signout
-            </span>
-          </Button>
-        </form>
+          Signout
+        </Link>
       ),
+      icon: <LogoutOutlined style={{ color: "#ff4d4f" }} />,
     },
   ];
 
@@ -91,7 +83,7 @@ const DashboardLayout = ({
         >
           <EcoHeader />
         </Suspense>
-        <Content style={{ margin: "0 16px" }}>
+        <Content style={{ margin: "0 16px", height: "100%" }}>
           <EcoBreadcrumb />
           <div
             style={{
@@ -99,6 +91,8 @@ const DashboardLayout = ({
               minHeight: 360,
               background: "white",
               borderRadius: 16,
+              height: "90%",
+              overflow: "scroll",
             }}
           >
             {children}

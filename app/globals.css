@@ -1,4 +1,11 @@
-html, body {
-    margin: 0;
-    padding: 0;
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.eco-hover-red {
+  &:hover {
+    background-color: #fff2f0 !important; 
+  }
 }
