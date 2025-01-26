@@ -1,3 +1,5 @@
+"use server"
+
 import { auth } from "@/auth";
 import { FindAccount } from "@/lib/Account";
 import {
@@ -5,6 +7,7 @@ import {
   TinkListAccountsResponse,
   TinkListTransactionsResponse,
 } from "@/types/tink";
+// import { Session } from "next-auth";
 
 export const fetchBankAccounts = async () => {
   const session = await auth();
@@ -37,38 +40,46 @@ export const fetchBankAccounts = async () => {
   );
 };
 
-export const fetchTransactions = async () => {
+export const fetchTransactions = async (
+  // session: Session | null,
+  pageToken: string | null
+) => {
   const session = await auth();
   const userId = session?.user?.id;
 
-  if (!userId) return [];
+  if (!userId) return { transactions: [], nextPageToken: null };
 
   const account = await FindAccount("tink", Number(userId));
 
   if (!account) {
-    return [];
+    return { transactions: [], nextPageToken: null };
   }
 
   const accessToken = account.access_token;
+  const query = pageToken ? `?pageToken=${pageToken}` : "";
 
-  const response = await fetch("https://api.tink.com/data/v2/transactions", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const response = await fetch(
+    `https://api.tink.com/data/v2/transactions${query}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
   const data: TinkListTransactionsResponse = await response.json();
 
-  console.log(JSON.stringify(data));
+  // console.log(JSON.stringify(data));
 
-  return (
+  const transactions =
     data.transactions?.map((transaction) => ({
       id: transaction.id,
       description: transaction.descriptions?.display,
       amount: formatBalance(transaction.amount),
       date: transaction.dates?.booked,
       status: transaction.status,
-    })) ?? []
-  );
+    })) ?? [];
+
+  return { transactions, nextPageToken: data.nextPageToken };
 };
 
 const formatBalance = (balance?: TinkCurrencyDenominatedAmount) => {

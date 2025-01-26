@@ -1,38 +1,17 @@
 import { fetchTransactions } from "@/lib/Tink";
-import { Table } from "antd";
+import TinkTransactionsTable from "./TinkTransactionsTable";
 
 const TinkTransactions = async () => {
-  const transactions = await fetchTransactions();
+  const transactions = await fetchTransactions(null);
 
-  const columns = [
-    // {
-    //   title: "ID",
-    //   dataIndex: "id",
-    //   key: "id",
-    // },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-    },
-  ];
-
-  return <Table dataSource={transactions} columns={columns} rowKey="id" />;
+  return (
+    <div>
+      <TinkTransactionsTable
+        initTransactions={transactions.transactions}
+        nextPage={transactions.nextPageToken}
+      />
+    </div>
+  );
 };
 
 export default TinkTransactions;

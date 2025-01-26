@@ -12,6 +12,7 @@ import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import MenuItem from "antd/es/menu/MenuItem";
+import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -85,18 +86,20 @@ const DashboardLayout = ({
         </Suspense>
         <Content style={{ margin: "0 16px", height: "100%" }}>
           <EcoBreadcrumb />
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: "white",
-              borderRadius: 16,
-              height: "90%",
-              overflow: "scroll",
-            }}
-          >
-            {children}
-          </div>
+          <SessionProvider>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 360,
+                background: "white",
+                borderRadius: 16,
+                height: "90%",
+                overflow: "scroll",
+              }}
+            >
+              {children}
+            </div>
+          </SessionProvider>
         </Content>
         <Footer style={{ textAlign: "center" }}>
           Economy Tracking @ {new Date().getFullYear()} | Created by Simon
