@@ -9,7 +9,7 @@ import { useCallback, useState } from "react";
 type TableTransactions = {
   id: string;
   description: string | undefined;
-  amount: string | null;
+  amount: number | null;
   date: string | undefined;
   status: TinkStatus;
 };

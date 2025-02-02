@@ -48,8 +48,6 @@ const EditableCell = ({
     setVal(newValue);
   };
 
-  console.log(record.currentAccount?.[field], value);
-
   return (
     <div style={{ display: "flex" }}>
       {disabled ? (
