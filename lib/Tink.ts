@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { auth } from "@/auth";
 import { FindAccount } from "@/lib/Account";
@@ -7,7 +7,6 @@ import {
   TinkListAccountsResponse,
   TinkListTransactionsResponse,
 } from "@/types/tink";
-// import { Session } from "next-auth";
 
 export const fetchBankAccounts = async () => {
   const session = await auth();
@@ -34,16 +33,18 @@ export const fetchBankAccounts = async () => {
     data.accounts?.map((acc) => ({
       name: acc.name,
       id: acc.id,
+      date: acc.dates.lastRefreshed,
+      type: acc.type,
+      accountNumber: acc.identifiers?.financialInstitution?.accountNumber,
       bookedBalance: formatBalance(acc.balances?.booked?.amount),
+      bookedCurrency: acc.balances?.booked?.amount?.currencyCode,
       availableBalance: formatBalance(acc.balances?.available?.amount),
+      availableCurrency: acc.balances?.available?.amount?.currencyCode,
     })) ?? []
   );
 };
 
-export const fetchTransactions = async (
-  // session: Session | null,
-  pageToken: string | null
-) => {
+export const fetchTransactions = async (pageToken: string | null) => {
   const session = await auth();
   const userId = session?.user?.id;
 
@@ -68,8 +69,6 @@ export const fetchTransactions = async (
   );
   const data: TinkListTransactionsResponse = await response.json();
 
-  // console.log(JSON.stringify(data));
-
   const transactions =
     data.transactions?.map((transaction) => ({
       id: transaction.id,
@@ -85,7 +84,11 @@ export const fetchTransactions = async (
 const formatBalance = (balance?: TinkCurrencyDenominatedAmount) => {
   if (!balance) return null;
 
-  return `${
-    Number(balance.value?.unscaledValue) * (10 ^ -Number(balance.value?.scale))
-  } ${balance.currencyCode}`;
+  return (
+    Math.round(
+      Number(balance.value?.unscaledValue) *
+        Math.pow(10, -Number(balance.value?.scale)) *
+        100
+    ) / 100
+  );
 };

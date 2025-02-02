@@ -1,3 +1,5 @@
+import { BankAccountType } from "@prisma/client";
+
 export type TinkToken = {
   token_type: string;
   expires_in: number;
@@ -20,7 +22,7 @@ export type TinkAccount = {
   id: string;
   identifiers?: TinkIdentifiers;
   name: string;
-  type: TinkAccountType;
+  type: BankAccountType;
 };
 
 export type TinkBalances = {
@@ -79,12 +81,12 @@ export type TinkSortCode = {
   code: string;
 };
 
-export enum TinkAccountType {
-  "UNDEFINED",
-  "CHECKING",
-  "SAVINGS",
-  "CREDIT_CARD",
-}
+// export enum TinkAccountType {
+//   UNDEFINED,
+//   CHECKING,
+//   SAVINGS,
+//   CREDIT_CARD,
+// }
 
 export type TinkTransaction = {
   accountId: string;

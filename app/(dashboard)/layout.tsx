@@ -4,6 +4,7 @@ import EcoHeader from "@/components/ui/EcoHeader";
 import EcoSider from "@/components/ui/EcoSider";
 import {
   AccountBookOutlined,
+  CloudSyncOutlined,
   HomeOutlined,
   LogoutOutlined,
   TransactionOutlined,
@@ -16,6 +17,7 @@ import { SessionProvider } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import ReactQueryClient from "./ReactQueryClient";
 
 type MenuItem = Required<MenuProps>["items"][number];
 const DashboardLayout = ({
@@ -41,6 +43,11 @@ const DashboardLayout = ({
         />
       ),
       children: [
+        {
+          key: "tink-sync",
+          label: <Link href="/tink-sync">Sync</Link>,
+          icon: <CloudSyncOutlined />,
+        },
         {
           key: "tink-bank-accounts",
           label: <Link href="/tink-bank-accounts">Accounts</Link>,
@@ -84,22 +91,24 @@ const DashboardLayout = ({
         >
           <EcoHeader />
         </Suspense>
-        <Content style={{ margin: "0 16px", height: "100%" }}>
+        <Content style={{ margin: "0 16px", overflow: "hidden" }}>
           <EcoBreadcrumb />
-          <SessionProvider>
-            <div
-              style={{
-                padding: 24,
-                minHeight: 360,
-                background: "white",
-                borderRadius: 16,
-                height: "90%",
-                overflow: "scroll",
-              }}
-            >
-              {children}
-            </div>
-          </SessionProvider>
+          <ReactQueryClient>
+            <SessionProvider>
+              <div
+                style={{
+                  padding: 24,
+                  minHeight: 360,
+                  background: "white",
+                  borderRadius: 16,
+                  height: "calc(100% - 54px)",
+                  overflow: "scroll",
+                }}
+              >
+                {children}
+              </div>
+            </SessionProvider>
+          </ReactQueryClient>
         </Content>
         <Footer style={{ textAlign: "center" }}>
           Economy Tracking @ {new Date().getFullYear()} | Created by Simon
