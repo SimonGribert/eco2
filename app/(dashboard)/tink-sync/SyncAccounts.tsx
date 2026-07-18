@@ -1,57 +1,25 @@
 "use client";
 
-import { fetchBankAccounts } from "@/lib/Tink";
+import { fetchBankAccounts, FormTableType, TableBankAccount } from "@/lib/Tink";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, Form, FormProps, Table, TableProps } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import FormList, { FormListFieldData } from "antd/es/form/FormList";
 import Text from "antd/es/typography/Text";
 import EditableCell from "./EditableCell";
-import { BankAccountType } from "@prisma/client";
-import { GetBankAccounts, UpdateBankAccounts } from "@/lib/BankAccount";
+import { UpdateBankAccounts } from "@/lib/BankAccount";
 
-export interface DataType {
-  name: string | null;
-  id: string;
-  accountNumber: string | undefined;
-  type: BankAccountType;
-  bookedBalance: number | null;
-  bookedCurrency: string | undefined;
-  availableBalance: number | null;
-  availableCurrency: string | undefined;
-  date: Date;
+type DataTypeBankAccount = FormTableType<TableBankAccount> & {
   field: FormListFieldData;
-  currentAccount:
-    | {
-        id: string;
-        name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: number;
-        type: BankAccountType;
-        availableBalance: number;
-        availableCurrency: string;
-        bookedBalance: number;
-        bookedCurrency: string;
-        refreshedAt: Date;
-      }
-    | undefined;
-}
+};
 
-type ColumnTypes = Exclude<TableProps<DataType>["columns"], undefined>;
+type ColumnTypes = Exclude<
+  TableProps<DataTypeBankAccount>["columns"],
+  undefined
+>;
 
-export type FieldType = {
-  accounts: {
-    name: string;
-    id: string;
-    date: Date;
-    type: BankAccountType;
-    accountNumber: string | undefined;
-    bookedBalance: number | null;
-    bookedCurrency: string | undefined;
-    availableBalance: number | null;
-    availableCurrency: string | undefined;
-  }[];
+type FieldType = {
+  accounts: FormTableType<TableBankAccount>[];
 };
 
 const SyncAccounts = ({ next }: { next: () => void }) => {
@@ -60,27 +28,18 @@ const SyncAccounts = ({ next }: { next: () => void }) => {
     queryFn: fetchBankAccounts,
   });
 
-  const bankAccounts = useQuery({
-    queryKey: ["back-accounts"],
-    queryFn: GetBankAccounts,
-  });
-
   const upsertBankAccounts = useMutation({
-    mutationFn: async (bankAccounts: FieldType["accounts"]) => {
+    mutationFn: async (bankAccounts: FormTableType<TableBankAccount>[]) => {
       return await UpdateBankAccounts(bankAccounts);
     },
   });
 
-  if (tinkBankAccounts.isPending || bankAccounts.isPending) {
+  if (tinkBankAccounts.isPending) {
     return <span>Loading...</span>;
   }
 
-  if (tinkBankAccounts.isError || bankAccounts.isError) {
-    return (
-      <span>
-        Error: {tinkBankAccounts.error?.message || bankAccounts.error?.message}
-      </span>
-    );
+  if (tinkBankAccounts.isError) {
+    return <span>Error: {tinkBankAccounts.error?.message}</span>;
   }
 
   if (tinkBankAccounts.data.length <= 0) {
@@ -204,24 +163,10 @@ const SyncAccounts = ({ next }: { next: () => void }) => {
                   style={{ margin: "16px 0" }}
                   dataSource={fields.map((field) => {
                     const row = tinkBankAccounts.data[field.key];
-                    const currentAccount = bankAccounts.data?.find(
-                      (acc) => acc.id === row.accountNumber
-                    );
 
                     return {
                       ...row,
                       field: field,
-                      currentAccount: currentAccount
-                        ? {
-                            ...currentAccount,
-                            availableBalance: Number(
-                              currentAccount?.availableBalance
-                            ),
-                            bookedBalance: Number(
-                              currentAccount?.bookedBalance
-                            ),
-                          }
-                        : undefined,
                     };
                   })}
                   columns={columns}

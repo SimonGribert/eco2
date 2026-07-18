@@ -1,4 +1,4 @@
-import { BankAccountType } from "@prisma/client";
+import { BankAccountType, TransactionStatus, TransactionType } from "@prisma/client";
 
 export type TinkToken = {
   token_type: string;
@@ -101,7 +101,7 @@ export type TinkTransaction = {
   merchantInformation?: TinkMerchantInformation;
   providerMutability?: TinkMutability;
   reference?: string;
-  status: TinkStatus;
+  status: TransactionStatus;
   transactionDateTime?: string;
   types: TinkTransactionTypes;
   valueDateTime?: string;
@@ -162,22 +162,7 @@ export enum TinkMutability {
   "IMMUTABLE",
 }
 
-export enum TinkStatus {
-  "UNDEFINED",
-  "PENDING",
-  "BOOKED",
-}
-
 export type TinkTransactionTypes = {
   financialInstitutionTypeCode?: string;
-  type: TinkTransactionType;
+  type: TransactionType;
 };
-
-export enum TinkTransactionType {
-  "UNDEFINED",
-  "CREDIT_CARD",
-  "PAYMENT",
-  "WITHDRAWAL",
-  "DEFAULT",
-  "TRANSFER",
-}

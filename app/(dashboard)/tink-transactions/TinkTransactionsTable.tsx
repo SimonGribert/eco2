@@ -1,18 +1,18 @@
 "use client";
 
-import { fetchTransactions } from "@/lib/Tink";
-import { TinkStatus } from "@/types/tink";
+import { fetchTransactions, TableTransactions } from "@/lib/Tink";
+// import { TinkStatus } from "@/types/tink";
 import { Button, Table } from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useCallback, useState } from "react";
 
-type TableTransactions = {
-  id: string;
-  description: string | undefined;
-  amount: number | null;
-  date: string | undefined;
-  status: TinkStatus;
-};
+// type TableTransactions = {
+//   id: string;
+//   description: string | undefined;
+//   amount: number | null;
+//   date: string | undefined;
+//   status: TinkStatus;
+// };
 
 const TinkTransactionsTable = ({
   initTransactions,
@@ -29,9 +29,11 @@ const TinkTransactionsTable = ({
   const loadTransactions = useCallback(async (pageToken: string | null) => {
     setIsLoading(true);
     const { transactions: newTransactions, nextPageToken: newNextPageToken } =
-      await fetchTransactions(pageToken);
-    setTransactions((prev) => [...prev, ...newTransactions]);
-    setNextPageToken(newNextPageToken);
+      await fetchTransactions({ pageParam: pageToken });
+    if (newTransactions) {
+      setTransactions((prev) => [...prev, ...newTransactions]);
+      setNextPageToken(newNextPageToken);
+    }
     setIsLoading(false);
   }, []);
 

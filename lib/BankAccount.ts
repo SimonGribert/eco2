@@ -1,11 +1,11 @@
 "use server";
 
-import { FieldType } from "@/app/(dashboard)/tink-sync/SyncAccounts";
 import { auth } from "@/auth";
 import { prisma } from "@/prisma/prisma";
 import { Prisma } from "@prisma/client";
+import { FormTableType, TableBankAccount } from "./Tink";
 
-export const UpdateBankAccounts = async (accounts: FieldType["accounts"]) => {
+export const UpdateBankAccounts = async (accounts: FormTableType<TableBankAccount>[]) => {
   const session = await auth();
   const userId = session?.user?.id;
 
@@ -17,15 +17,17 @@ export const UpdateBankAccounts = async (accounts: FieldType["accounts"]) => {
 };
 
 const UpdateBankAccount = async (
-  account: FieldType["accounts"][0],
+  account: FormTableType<TableBankAccount>,
   userId: number
 ) => {
   if (!account.accountNumber) return;
 
-  await prisma.bankAccount.upsert({
+  console.log("Upserting bank account:", account);
+
+  const test = await prisma.bankAccount.upsert({
     where: { id: account.accountNumber, userId },
     update: {
-      name: account.name,
+      name: account.name ?? "Anonymous",
       type: account.type,
       bookedBalance: new Prisma.Decimal(account.bookedBalance ?? 0),
       bookedCurrency: account.bookedCurrency,
@@ -36,7 +38,7 @@ const UpdateBankAccount = async (
     create: {
       id: account.accountNumber,
       userId: userId,
-      name: account.name,
+      name: account.name ?? "Anonymous",
       type: account.type,
       bookedBalance: new Prisma.Decimal(account.bookedBalance ?? 0),
       bookedCurrency: account.bookedCurrency ?? "SEK",
@@ -45,6 +47,8 @@ const UpdateBankAccount = async (
       refreshedAt: account.date,
     },
   });
+
+  console.log("Upserted bank account:", test);
 
   if (!account.date) return;
 

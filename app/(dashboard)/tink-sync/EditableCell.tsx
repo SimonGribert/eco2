@@ -1,12 +1,19 @@
 "use client";
 
-import { Button, Form, Input } from "antd";
+import { Button, Form, FormListFieldData, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import Text from "antd/es/typography/Text";
 import { useState } from "react";
-import { DataType } from "./SyncAccounts";
 
-const EditableCell = ({
+type EditableCellRecord<TResource> = TResource & {
+  field: FormListFieldData;
+  resource?: TResource;
+};
+
+const EditableCell = <
+  TResource,
+  TDataRecord extends EditableCellRecord<TResource>
+>({
   value,
   field,
   record,
@@ -16,8 +23,8 @@ const EditableCell = ({
   size = "125px",
 }: {
   value: string | number;
-  field: "name" | "bookedBalance" | "availableBalance";
-  record: DataType;
+  field: keyof TResource;
+  record: TDataRecord;
   type?: "text" | "number";
   enableEdit?: boolean;
   enableSwap?: boolean;
@@ -34,12 +41,12 @@ const EditableCell = ({
       field,
     ]);
 
-    if (currValue === record.currentAccount?.[field]) {
+    if (currValue === record.resource?.[field]) {
       form.setFieldValue(["accounts", record.field.name, field], record[field]);
     } else if (currValue === value) {
       form.setFieldValue(
         ["accounts", record.field.name, field],
-        record.currentAccount?.[field]
+        record.resource?.[field]
       );
     }
 
@@ -61,16 +68,13 @@ const EditableCell = ({
           <Text
             type={
               type === "text"
-                ? !record.currentAccount ||
-                  record.currentAccount?.[field] === value
+                ? !record.resource || record.resource?.[field] === value
                   ? "secondary"
                   : "warning"
                 : type === "number"
-                ? !record.currentAccount ||
-                  record.currentAccount?.[field] === value
+                ? !record.resource || record.resource?.[field] === value
                   ? "secondary"
-                  : record.currentAccount[field] &&
-                    record.currentAccount[field] > value
+                  : record.resource[field] && record.resource[field] > value
                   ? "danger"
                   : "success"
                 : "secondary"
@@ -84,12 +88,12 @@ const EditableCell = ({
           style={{ margin: 0, width: size }}
           key={record.field.key}
           label={null}
-          name={[record.field.name, field]}
+          name={[record.field.name, field as string]}
         >
           <Input />
         </FormItem>
       )}
-      {enableSwap && record.currentAccount && disabled && (
+      {enableSwap && record.resource && disabled && (
         <Button
           style={{ alignSelf: "center" }}
           size="small"

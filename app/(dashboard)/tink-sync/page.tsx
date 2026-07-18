@@ -3,6 +3,8 @@
 import { Steps } from "antd";
 import { useState } from "react";
 import SyncAccounts from "./SyncAccounts";
+import SyncTransactions from "./SyncTransactions";
+import ProcessTransactions from "./ProcessTransactions";
 
 const TinkSync = () => {
   const [current, setCurrent] = useState(0);
@@ -20,12 +22,12 @@ const TinkSync = () => {
     {
       title: "Sync transactions",
       key: "sync-transactions",
-      content: "Second-content",
+      content: <SyncTransactions next={next} />,
     },
     {
       title: "Process transactions",
       key: "process-transactions",
-      content: "Third-content",
+      content: <ProcessTransactions next={next} />,
     },
     {
       title: "Finished",

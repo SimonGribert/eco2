@@ -124,6 +124,7 @@ enum BankAccountType {
 
 model UnprocessedTransaction {
   id                  String            @id @unique
+  transactionId       String?
   bankAccountId       String?
   userId              Int
   amount              Decimal           @db.Decimal(65, 2)
@@ -132,9 +133,9 @@ model UnprocessedTransaction {
   descriptionDisplay  String
   status              TransactionStatus
   type                TransactionType
-  bookedDate          DateTime
-  transactionDate     DateTime
-  valueDate           DateTime
+  bookedDate          DateTime?
+  transactionDate     DateTime?
+  valueDate           DateTime?
   createdAt           DateTime          @default(now())
 
   bankAccount BankAccount? @relation(fields: [bankAccountId], references: [id])
